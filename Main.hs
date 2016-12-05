@@ -8,6 +8,7 @@ import Control.Monad.State (State, state, runState)
 import Data.Map as DM (Map, fromList, elems, lookup, insert, mapWithKey, (!))
 import Data.Text (Text, pack)
 import Data.Functor.Misc (dmapToMap, mapWithFunctorToDMap)
+import Data.Time.Clock (getCurrentTime)
 
 data Cell = Cell { mined :: Bool 
                  , exposed :: Bool
@@ -239,11 +240,13 @@ boardAttrs = fromList
 showBoard :: MonadWidget t m => m ()
 showBoard = do
     let initial  = mkBoard 
+    now <- liftIO getCurrentTime 
+    advanceEvent <- fmap mempty <$> tickLossy 1.0 now
     rec 
         let pick = switch $ (leftmost . elems) <$> current ev
             pickWithCells = attachPromptlyDynWith (,) cm pick
             updateEv = fmap reactToPick pickWithCells
-            eventAndCellMap = listHoldWithKey initial updateEv (showCell initial)
+            eventAndCellMap = listHoldWithKey initial advanceEvent (showCell initial)
             eventMap = fmap (fmap (fmap fst)) eventAndCellMap
             cellMap = fmap (fmap (fmap snd)) eventAndCellMap
         cm <- cellMap 
