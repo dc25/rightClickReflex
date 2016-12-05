@@ -2,12 +2,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Reflex
 import Reflex.Dom
-import Control.Monad.Random (RandomGen, Rand, runRand, getStdGen, getRandomR)
 import Control.Monad.Trans (liftIO)
-import Control.Monad.State (State, state, runState)
-import Data.Map as DM (Map, fromList, elems, lookup, insert, mapWithKey, (!))
+import Data.Map as DM (Map, fromList)
 import Data.Text (Text, pack)
-import Data.Functor.Misc (dmapToMap, mapWithFunctorToDMap)
 import Data.Time.Clock (getCurrentTime)
 
 type Pos = (Int, Int)
