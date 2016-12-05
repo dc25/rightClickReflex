@@ -18,8 +18,6 @@ data Cell = Cell { mined :: Bool
 type Pos = (Int, Int)
 type Board = Map Pos Cell
 
-data Msg = LeftPick Pos | RightPick Pos 
-
 w :: Int
 w =  40
 
@@ -38,8 +36,8 @@ mkBoard =
         cells = repeat mkCell
     in fromList $ zip positions cells 
 
-cellAttrs :: Cell -> Map Text Text
-cellAttrs cell = 
+cellAttrs :: Map Text Text
+cellAttrs = 
     fromList [ ( "x",            "0.05")
              , ( "y",            "0.05")
              , ( "width",        "0.9")
@@ -56,14 +54,12 @@ groupAttrs (x,y) =
                )
              ] 
 
-showSquare :: MonadWidget t m => Pos -> Cell -> m (Event t Msg)
-showSquare pos c = do
-    elSvgns "rect" (constDyn $ cellAttrs c) $ return ()
-    return never
-
-showCell :: MonadWidget t m => Board -> Pos -> Cell -> m (Event t Msg)
-showCell board pos c@(Cell mined _ _) = 
-    fmap snd $ elSvgns "g"  (constDyn $ groupAttrs pos) $ showSquare pos c 
+showCell :: MonadWidget t m => Board -> Pos -> Cell -> m ()
+showCell board pos c@(Cell mined _ _) = do
+    elSvgns "g"  (constDyn $ groupAttrs pos) $ 
+        elSvgns "rect" (constDyn $ cellAttrs) $ 
+            return ()
+    return ()
 
 boardAttrs :: Map Text Text
 boardAttrs = fromList 
