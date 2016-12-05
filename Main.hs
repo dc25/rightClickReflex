@@ -83,55 +83,6 @@ showCell :: MonadWidget t m => Board -> Pos -> Cell -> m (Event t Msg, Cell)
 showCell board pos c@(Cell mined _ _) = 
     fmap snd $ elSvgns "g"  (constDyn $ groupAttrs pos) $ showWithoutText board pos c 
 
-adjacents :: Pos -> [Pos]
-adjacents (x,y) = 
-    [(xx,yy) | xx <- [x-1..x+1]
-             , yy <- [y-1..y+1]
-             , (xx,yy) /= (x,y)
-             , xx >= 0, yy >= 0
-             , xx < w, yy < h]
-
-mineCount :: Board -> Pos -> Int
-mineCount board pos  = 
-    length $ filter mined $ fmap (board !) $ adjacents pos
-
-fromLeftPickM :: Pos -> State Board [(Pos, Maybe Cell)]
-fromLeftPickM pos = 
-    state $
-        \board ->
-            let indices = adjacents pos
-                count = length $ filter mined $ fmap (board !) indices
-                c = board ! pos
-                
-                updatedCell = if flagged c -- can't expose a flagged cell.
-                              then c
-                              else c {exposed=True} 
-
-                updatedBoard = insert pos updatedCell board 
-
-                checkList = (if exposed c || flagged c || mined c || count /= 0 
-                             then [] 
-                             else indices 
-                             )
-
-                neighborUpdater = mapM fromLeftPickM checkList
-                (updatedNeighbors, updatedNeighborsBoard) = runState neighborUpdater updatedBoard
-            in ((pos, Just updatedCell) : concat updatedNeighbors, updatedNeighborsBoard)
-
-fromPick :: Board -> Msg -> [(Pos, Maybe Cell)]
-fromPick board (LeftPick p) = 
-    let (nc,_) = runState (fromLeftPickM p) board
-    in nc
-
-fromPick board (RightPick pos ) = 
-    let c = board ! pos
-    in if exposed c
-       then [] -- can't flag a cell that's already exposed.
-       else [(pos, Just c {flagged=not $ flagged c})]
-
-reactToPick :: (Board,Msg) -> Map Pos (Maybe Cell)
-reactToPick (b,c) = fromList $ fromPick b c
-
 boardAttrs :: Map Text Text
 boardAttrs = fromList 
                  [ ("width" , pack $ show $ w * cellSize)
@@ -146,14 +97,11 @@ showBoard = do
     now <- liftIO getCurrentTime 
     advanceEvent <- fmap mempty <$> tickLossy 1.0 now
     rec 
-        let pick = switch $ (leftmost . elems) <$> current ev
-            pickWithCells = attachPromptlyDynWith (,) cm pick
-            updateEv = fmap reactToPick pickWithCells
+        let 
             eventAndCellMap = listHoldWithKey initial advanceEvent (showCell initial)
             eventMap = fmap (fmap (fmap fst)) eventAndCellMap
-            cellMap = fmap (fmap (fmap snd)) eventAndCellMap
-        cm <- cellMap 
-        (_, ev) <- elSvgns "svg" (constDyn boardAttrs) eventMap
+        cm <- eventAndCellMap
+        elSvgns "svg" (constDyn boardAttrs) eventMap
     return ()
 
 main :: IO ()
