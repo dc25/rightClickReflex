@@ -54,17 +54,6 @@ cellAttrs cell =
                 , ("oncontextmenu", "return false;")
                 ] 
 
-textAttrs :: Map Text Text
-textAttrs = 
-    fromList [ ("x",             "0.5")
-             , ("y",             "0.6")
-             , ("font-size",     "1.0" )
-             , ("fill",          "blue" )
-             , ("alignment-baseline", "middle" )
-             , ("text-anchor",        "middle" )
-             , ("oncontextmenu",      "return false;")
-             ] 
-
 groupAttrs :: Pos -> Map Text Text
 groupAttrs (x,y) = 
     fromList [ ("transform", 
