@@ -58,19 +58,16 @@ boardAttrs = fromList
                  , ("oncontextmenu", "return false;")
                  ]
 
-showBoard :: MonadWidget t m => m ()
-showBoard = do
-    now <- liftIO getCurrentTime 
-    advanceEvent <- fmap mempty <$> tickLossy 1.0 now
-    rec 
-        let 
-            eventMap = listHoldWithKey mkBoard advanceEvent showCell
-        cm <- eventMap
-        elSvgns "svg" (constDyn boardAttrs) eventMap
-    return ()
-
 main :: IO ()
-main = mainWidget showBoard
+main = mainWidget $ do 
+           now <- liftIO getCurrentTime 
+           advanceEvent <- fmap mempty <$> tickLossy 1.0 now
+           rec 
+               let 
+                   eventMap = listHoldWithKey mkBoard advanceEvent showCell
+               cm <- eventMap
+               elSvgns "svg" (constDyn boardAttrs) eventMap
+           return ()
 
 elSvgns :: MonadWidget t m => Text -> Dynamic t (Map Text Text) -> m a -> m (El t, a)
 elSvgns = elDynAttrNS' (Just "http://www.w3.org/2000/svg")
