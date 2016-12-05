@@ -28,16 +28,14 @@ h = 80
 cellSize :: Int
 cellSize = 20
 
-mkCell :: RandomGen g => Rand g Cell
-mkCell = do
-    t <- getRandomR (0.0::Float, 1.0)
-    return $ Cell (t < 0.201) False False
+mkCell :: Cell
+mkCell = Cell False False False
 
-mkBoard :: RandomGen g => Rand g Board
-mkBoard = do
+mkBoard :: Board
+mkBoard = 
     let positions = [(x,y) | x <- [0..w-1], y <- [0..h-1]]
-    cells <- sequence $ repeat mkCell
-    return $ fromList $ zip positions cells 
+        cells = repeat mkCell
+    in fromList $ zip positions cells 
 
 getColor :: Cell -> String
 getColor (Cell _ exposed _) = if exposed then "#909090" else "#AAAAAA"
@@ -240,8 +238,7 @@ boardAttrs = fromList
 
 showBoard :: MonadWidget t m => m ()
 showBoard = do
-    gen <- liftIO getStdGen
-    let (initial, _)  = runRand mkBoard gen
+    let initial  = mkBoard 
     rec 
         let pick = switch $ (leftmost . elems) <$> current ev
             pickWithCells = attachPromptlyDynWith (,) cm pick
