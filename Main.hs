@@ -28,8 +28,6 @@ cellAttrs =
              , ( "y",            "0.05")
              , ( "width",        "0.9")
              , ( "height",       "0.9")
-             , ( "style",        "fill:red")
-             , ("oncontextmenu", "return false;")
              ] 
 
 groupAttrs :: Pos -> Map Text Text
@@ -52,7 +50,6 @@ boardAttrs = fromList
                  [ ("width" , pack $ show $ w * cellSize)
                  , ("height", pack $ show $ h * cellSize)
                  , ("style" , "border:solid; margin:8em")
-                 , ("oncontextmenu", "return false;")
                  ]
 
 main :: IO ()
@@ -61,9 +58,9 @@ main = mainWidget $ do
            advanceEvent <- fmap mempty <$> tickLossy 1.0 now
            rec 
                let 
-                   eventMap = listHoldWithKey mkBoard advanceEvent showCell
-               cm <- eventMap
-               elSvgns "svg" (constDyn boardAttrs) eventMap
+                   ev = listHoldWithKey mkBoard advanceEvent showCell
+               cm <- ev  -- slows load time down quite a bit.
+               elSvgns "svg" (constDyn boardAttrs) ev
            return ()
 
 elSvgns :: MonadWidget t m => Text -> Dynamic t (Map Text Text) -> m a -> m (El t, a)
