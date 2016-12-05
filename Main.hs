@@ -62,17 +62,10 @@ groupAttrs (x,y) =
                )
              ] 
 
-mouseEv :: Reflex t => Pos -> Cell -> El t -> [Event t Msg]
-mouseEv pos c el = 
-    let r_rEv = RightPick pos <$ domEvent Contextmenu el
-        l_rEv = LeftPick  pos <$ domEvent Click       el
-    in [l_rEv, r_rEv]
-
-
 showSquare :: MonadWidget t m => Pos -> Cell -> m [Event t Msg]
 showSquare pos c = do
     (rEl,_) <- elSvgns "rect" (constDyn $ cellAttrs c) $ return ()
-    return $ mouseEv pos c rEl
+    return $ [never]
 
 showWithoutText :: MonadWidget t m => Board -> Pos -> Cell -> m (Event t Msg, Cell)
 showWithoutText board pos c = do
