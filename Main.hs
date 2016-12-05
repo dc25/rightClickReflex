@@ -10,13 +10,7 @@ import Data.Text (Text, pack)
 import Data.Functor.Misc (dmapToMap, mapWithFunctorToDMap)
 import Data.Time.Clock (getCurrentTime)
 
-data Cell = Cell { mined :: Bool 
-                 , exposed :: Bool
-                 , flagged :: Bool
-                 } deriving Show
-
 type Pos = (Int, Int)
-type Board = Map Pos Cell
 
 w :: Int
 w =  40
@@ -27,14 +21,9 @@ h = 80
 cellSize :: Int
 cellSize = 20
 
-mkCell :: Cell
-mkCell = Cell False False False
-
-mkBoard :: Board
+mkBoard :: Map Pos ()
 mkBoard = 
-    let positions = [(x,y) | x <- [0..w-1], y <- [0..h-1]]
-        cells = repeat mkCell
-    in fromList $ zip positions cells 
+    fromList $ zip [(x,y) | x <- [0..w-1], y <- [0..h-1]] $ repeat ()
 
 cellAttrs :: Map Text Text
 cellAttrs = 
@@ -54,8 +43,8 @@ groupAttrs (x,y) =
                )
              ] 
 
-showCell :: MonadWidget t m => Board -> Pos -> Cell -> m ()
-showCell board pos c@(Cell mined _ _) = do
+showCell :: MonadWidget t m => Pos -> () -> m ()
+showCell pos () = do
     elSvgns "g"  (constDyn $ groupAttrs pos) $ 
         elSvgns "rect" (constDyn $ cellAttrs) $ 
             return ()
@@ -71,12 +60,11 @@ boardAttrs = fromList
 
 showBoard :: MonadWidget t m => m ()
 showBoard = do
-    let initial  = mkBoard 
     now <- liftIO getCurrentTime 
     advanceEvent <- fmap mempty <$> tickLossy 1.0 now
     rec 
         let 
-            eventMap = listHoldWithKey initial advanceEvent (showCell initial)
+            eventMap = listHoldWithKey mkBoard advanceEvent showCell
         cm <- eventMap
         elSvgns "svg" (constDyn boardAttrs) eventMap
     return ()
@@ -84,6 +72,5 @@ showBoard = do
 main :: IO ()
 main = mainWidget showBoard
 
--- At end to avoid Rosetta Code unmatched quotes problem.
 elSvgns :: MonadWidget t m => Text -> Dynamic t (Map Text Text) -> m a -> m (El t, a)
 elSvgns = elDynAttrNS' (Just "http://www.w3.org/2000/svg")
