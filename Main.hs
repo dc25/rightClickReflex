@@ -38,21 +38,15 @@ mkBoard =
         cells = repeat mkCell
     in fromList $ zip positions cells 
 
-getColor :: Cell -> String
-getColor (Cell _ exposed _) = if exposed then "#909090" else "#AAAAAA"
-
 cellAttrs :: Cell -> Map Text Text
 cellAttrs cell = 
-    let size = 0.9
-        placement = 0.5 - (size/2.0)
-
-    in fromList [ ( "x",            pack $ show placement)
-                , ( "y",            pack $ show placement)
-                , ( "width",        pack $ show size)
-                , ( "height",       pack $ show size)
-                , ( "style",        pack $ "fill:" ++ getColor cell)
-                , ("oncontextmenu", "return false;")
-                ] 
+    fromList [ ( "x",            "0.05")
+             , ( "y",            "0.05")
+             , ( "width",        "0.9")
+             , ( "height",       "0.9")
+             , ( "style",        "fill:red")
+             , ("oncontextmenu", "return false;")
+             ] 
 
 groupAttrs :: Pos -> Map Text Text
 groupAttrs (x,y) = 
@@ -62,19 +56,14 @@ groupAttrs (x,y) =
                )
              ] 
 
-showSquare :: MonadWidget t m => Pos -> Cell -> m [Event t Msg]
+showSquare :: MonadWidget t m => Pos -> Cell -> m (Event t Msg)
 showSquare pos c = do
-    (rEl,_) <- elSvgns "rect" (constDyn $ cellAttrs c) $ return ()
-    return $ [never]
+    elSvgns "rect" (constDyn $ cellAttrs c) $ return ()
+    return never
 
-showWithoutText :: MonadWidget t m => Board -> Pos -> Cell -> m (Event t Msg, Cell)
-showWithoutText board pos c = do
-                  rEv <- showSquare pos c
-                  return (leftmost rEv ,c)
-
-showCell :: MonadWidget t m => Board -> Pos -> Cell -> m (Event t Msg, Cell)
+showCell :: MonadWidget t m => Board -> Pos -> Cell -> m (Event t Msg)
 showCell board pos c@(Cell mined _ _) = 
-    fmap snd $ elSvgns "g"  (constDyn $ groupAttrs pos) $ showWithoutText board pos c 
+    fmap snd $ elSvgns "g"  (constDyn $ groupAttrs pos) $ showSquare pos c 
 
 boardAttrs :: Map Text Text
 boardAttrs = fromList 
@@ -91,9 +80,8 @@ showBoard = do
     advanceEvent <- fmap mempty <$> tickLossy 1.0 now
     rec 
         let 
-            eventAndCellMap = listHoldWithKey initial advanceEvent (showCell initial)
-            eventMap = fmap (fmap (fmap fst)) eventAndCellMap
-        cm <- eventAndCellMap
+            eventMap = listHoldWithKey initial advanceEvent (showCell initial)
+        cm <- eventMap
         elSvgns "svg" (constDyn boardAttrs) eventMap
     return ()
 
