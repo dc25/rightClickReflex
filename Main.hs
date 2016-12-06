@@ -49,18 +49,18 @@ boardAttrs :: Map Text Text
 boardAttrs = fromList 
                  [ ("width" , pack $ show $ w * cellSize)
                  , ("height", pack $ show $ h * cellSize)
-                 , ("style" , "border:solid; margin:8em")
+                 , ("style" , "border:dotted; margin:8em")
                  ]
 
 main :: IO ()
 main = mainWidget $ do 
            now <- liftIO getCurrentTime 
-           advanceEvent <- fmap mempty <$> tickLossy 1.0 now
+           ticker <- fmap mempty <$> tickLossy 1.0 now
            rec 
                let 
-                   ev = listHoldWithKey mkBoard advanceEvent showCell
-               cm <- ev  -- slows load time down quite a bit.
+                   ev = listHoldWithKey mkBoard ticker showCell
                elSvgns "svg" (constDyn boardAttrs) ev
+               cm <- ev  -- slows load time down quite a bit.
            return ()
 
 elSvgns :: MonadWidget t m => Text -> Dynamic t (Map Text Text) -> m a -> m (El t, a)
