@@ -14,10 +14,10 @@ type Pos = (Int, Int)
 data Msg = Pick Pos
 
 w :: Int
-w =  2
+w =  3
 
 h :: Int
-h = 2
+h = 3
 
 cellSize :: Int
 cellSize = 20
@@ -45,13 +45,6 @@ showCell pos = do
                        return ()
     return $ Pick pos <$ domEvent Click el
 
-showCell2 :: MonadWidget t m => Pos -> m (Event t Msg)
-showCell2 pos = do
-    (el, _) <- elSvgns "g"  (constDyn $ groupAttrs pos) $ 
-                   elSvgns "rect" (constDyn $ cellAttrs) $ 
-                       return ()
-    return $ Pick pos <$ domEvent Click el
-
 groupAttrs2b :: Pos -> Map Text Text
 groupAttrs2b (x,y) = 
     fromList [ ("transform", 
@@ -72,6 +65,16 @@ showCell3 posMap = do
            let x :: Dynamic t Pos = fmap (DM.findWithDefault (0,0) (0,0)) posMap
            showCell2b x
 
+showCell4 :: forall t m. MonadWidget t m => Dynamic t (DM.Map Pos Pos)-> m (Event t Msg)
+showCell4 posMap = do
+           let x :: Dynamic t [Pos] = fmap DM.elems posMap
+           showCell4b x
+
+showCell4b :: forall t m. MonadWidget t m => Dynamic t [Pos] -> m (Event t Msg)
+showCell4b posList = do
+           let (y,ys) :: (Dynamic t Pos, Dynamic t [Pos]) = (fmap head posList, fmap tail posList)
+           showCell2b y
+
 boardAttrs :: Map Text Text
 boardAttrs = fromList 
                  [ ("width" , pack $ show $ w * cellSize)
@@ -86,7 +89,7 @@ showBoard = do
            let pickEv =  leftmost $ elems ev
            dynIndices <- foldDyn (flip const) indices pickEv
            let x:: Dynamic t (Maybe Pos) = fmap (DM.lookup (0,0)) dynIndices
-           (el, ev) <- elSvgns "svg" (constDyn boardAttrs) $ showCell3 dynIndices
+           (el, ev) <- elSvgns "svg" (constDyn boardAttrs) $ showCell4 dynIndices
            return ()
 
 main :: IO ()
