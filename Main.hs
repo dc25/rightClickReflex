@@ -12,37 +12,29 @@ import Data.Time.Clock (getCurrentTime)
 data Msg = Pick 
 
 cellSize :: Int
-cellSize = 20
+cellSize = 100
 
 cellAttrs :: Bool -> Map Text Text
 cellAttrs c = 
-    fromList [ ( "x",            "0.05")
-             , ( "y",            "0.05")
-             , ( "width",        "0.9")
-             , ( "height",       "0.9")
+    fromList [ ( "x",            "5")
+             , ( "y",            "5")
+             , ( "width",        "90")
+             , ( "height",       "90")
              , ( "style",        pack $ "fill:" ++ if c then "red" else "black")
              , ( "oncontextmenu", "return false;")
              ] 
 
-groupAttrs :: Map Text Text
-groupAttrs  = 
-    fromList [ ("transform", 
-                pack $    "scale (" ++ show cellSize ++ ", " ++ show cellSize ++ ") " 
-               )
-             ] 
-
 showCell :: forall t m. MonadWidget t m => Dynamic t Bool -> m (Event t Msg)
 showCell dCell = do
-    (el, _) <- elSvgns "g"  (constDyn $ groupAttrs ) $ 
+    (el, _) <- 
                    elSvgns "rect" (fmap cellAttrs dCell) $ 
                        return ()
     return $ Pick <$ leftmost [domEvent Click el , domEvent Contextmenu el]
 
 boardAttrs :: Map Text Text
 boardAttrs = fromList 
-                 [ ("width" , pack $ show $ cellSize)
-                 , ("height", pack $ show $ cellSize)
-                 , ("style" , "border:solid; margin:8em")
+                 [ ("width" , "100")
+                 , ("height", "100")
                  ]
 
 updateBoard Pick  = not 
