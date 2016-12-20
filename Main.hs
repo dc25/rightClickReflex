@@ -9,9 +9,7 @@ import Data.Text (Text, pack)
 import Data.Traversable (forM)
 import Data.Time.Clock (getCurrentTime)
 
-type Pos = (Int, Int) 
-
-data Msg = Pick Pos
+data Msg = Pick 
 
 cellSize :: Int
 cellSize = 20
@@ -26,20 +24,19 @@ cellAttrs c =
              , ( "oncontextmenu", "return false;")
              ] 
 
-groupAttrs :: Pos -> Map Text Text
-groupAttrs (x,y) = 
+groupAttrs :: Map Text Text
+groupAttrs  = 
     fromList [ ("transform", 
                 pack $    "scale (" ++ show cellSize ++ ", " ++ show cellSize ++ ") " 
                )
              ] 
 
-showCell :: forall t m. MonadWidget t m => Dynamic t (Map Pos Bool) -> Pos -> m (Event t Msg)
-showCell dBoard pos = do
-    let dCell = fmap (findWithDefault False pos) dBoard
-    (el, _) <- elSvgns "g"  (constDyn $ groupAttrs pos) $ 
+showCell :: forall t m. MonadWidget t m => Dynamic t Bool -> m (Event t Msg)
+showCell dCell = do
+    (el, _) <- elSvgns "g"  (constDyn $ groupAttrs ) $ 
                    elSvgns "rect" (fmap cellAttrs dCell) $ 
                        return ()
-    return $ Pick pos <$ leftmost [domEvent Click el , domEvent Contextmenu el]
+    return $ Pick <$ leftmost [domEvent Click el , domEvent Contextmenu el]
 
 boardAttrs :: Map Text Text
 boardAttrs = fromList 
@@ -48,16 +45,13 @@ boardAttrs = fromList
                  , ("style" , "border:solid; margin:8em")
                  ]
 
-initBoard coords = (fromList (zip coords $ repeat False))
-
-updateBoard (Pick pos) oldBoard = insert pos True oldBoard
+updateBoard Pick  = not 
 
 showBoard :: forall t m. MonadWidget t m => m ()
 showBoard = do 
                 rec 
-                    let indices = [(0,0)]
-                    board <- foldDyn updateBoard (initBoard indices) ev
-                    (el, ev) <- elSvgns "svg" (constDyn boardAttrs) $ showCell board (0,0)
+                    board <- foldDyn updateBoard False  ev
+                    (el, ev) <- elSvgns "svg" (constDyn boardAttrs) $ showCell board 
                 return ()
 
 main :: IO ()
