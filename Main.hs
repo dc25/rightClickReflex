@@ -56,9 +56,8 @@ showBoard :: forall t m. MonadWidget t m => m ()
 showBoard = do 
                 rec 
                     let indices = [(0,0)]
-                    board <- foldDyn updateBoard (initBoard indices) pickEv
-                    (el, ev) <- elSvgns "svg" (constDyn boardAttrs) $ forM indices $ showCell board
-                    let pickEv =  leftmost ev
+                    board <- foldDyn updateBoard (initBoard indices) ev
+                    (el, ev) <- elSvgns "svg" (constDyn boardAttrs) $ showCell board (0,0)
                 return ()
 
 main :: IO ()
