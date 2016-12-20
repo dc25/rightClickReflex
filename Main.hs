@@ -11,29 +11,18 @@ import Data.Time.Clock (getCurrentTime)
 
 type Pos = (Int, Int) 
 
-data Cell = Cell { mined :: Bool }
-
-initCell :: Cell
-initCell = Cell {mined = False}
-
 data Msg = Pick Pos
-
-w :: Int
-w = 1
-
-h :: Int
-h = 1
 
 cellSize :: Int
 cellSize = 20
 
-cellAttrs :: Cell -> Map Text Text
+cellAttrs :: Bool -> Map Text Text
 cellAttrs c = 
     fromList [ ( "x",            "0.05")
              , ( "y",            "0.05")
              , ( "width",        "0.9")
              , ( "height",       "0.9")
-             , ( "style",        pack $ "fill:" ++ if mined c then "red" else "black")
+             , ( "style",        pack $ "fill:" ++ if c then "red" else "black")
              , ( "oncontextmenu", "return false;")
              ] 
 
@@ -41,13 +30,12 @@ groupAttrs :: Pos -> Map Text Text
 groupAttrs (x,y) = 
     fromList [ ("transform", 
                 pack $    "scale (" ++ show cellSize ++ ", " ++ show cellSize ++ ") " 
-                       ++ "translate (" ++ show x ++ ", " ++ show y ++ ")" 
                )
              ] 
 
-showCell :: forall t m. MonadWidget t m => Dynamic t (Map Pos Cell) -> Pos -> m (Event t Msg)
+showCell :: forall t m. MonadWidget t m => Dynamic t (Map Pos Bool) -> Pos -> m (Event t Msg)
 showCell dBoard pos = do
-    let dCell = fmap (findWithDefault initCell pos) dBoard
+    let dCell = fmap (findWithDefault False pos) dBoard
     (el, _) <- elSvgns "g"  (constDyn $ groupAttrs pos) $ 
                    elSvgns "rect" (fmap cellAttrs dCell) $ 
                        return ()
@@ -55,19 +43,19 @@ showCell dBoard pos = do
 
 boardAttrs :: Map Text Text
 boardAttrs = fromList 
-                 [ ("width" , pack $ show $ w * cellSize)
-                 , ("height", pack $ show $ h * cellSize)
+                 [ ("width" , pack $ show $ cellSize)
+                 , ("height", pack $ show $ cellSize)
                  , ("style" , "border:solid; margin:8em")
                  ]
 
-initBoard coords = (fromList (zip coords $ repeat initCell))
+initBoard coords = (fromList (zip coords $ repeat False))
 
-updateBoard (Pick pos) oldBoard = insert pos (Cell {mined = True}) oldBoard
+updateBoard (Pick pos) oldBoard = insert pos True oldBoard
 
 showBoard :: forall t m. MonadWidget t m => m ()
 showBoard = do 
                 rec 
-                    let indices = [(x,y) | x <- [0..w-1], y <- [0..h-1]] 
+                    let indices = [(0,0)]
                     board <- foldDyn updateBoard (initBoard indices) pickEv
                     (el, ev) <- elSvgns "svg" (constDyn boardAttrs) $ forM indices $ showCell board
                     let pickEv =  leftmost ev
