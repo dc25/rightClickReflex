@@ -19,10 +19,10 @@ initCell = Cell {mined = False}
 data Msg = Pick Pos
 
 w :: Int
-w = 32
+w = 1
 
 h :: Int
-h = 16
+h = 1
 
 cellSize :: Int
 cellSize = 20
@@ -34,6 +34,7 @@ cellAttrs c =
              , ( "width",        "0.9")
              , ( "height",       "0.9")
              , ( "style",        pack $ "fill:" ++ if mined c then "red" else "black")
+             , ( "oncontextmenu", "return false;")
              ] 
 
 groupAttrs :: Pos -> Map Text Text
@@ -50,7 +51,7 @@ showCell dBoard pos = do
     (el, _) <- elSvgns "g"  (constDyn $ groupAttrs pos) $ 
                    elSvgns "rect" (fmap cellAttrs dCell) $ 
                        return ()
-    return $ Pick pos <$ domEvent Click el 
+    return $ Pick pos <$ leftmost [domEvent Click el , domEvent Contextmenu el]
 
 boardAttrs :: Map Text Text
 boardAttrs = fromList 
@@ -77,3 +78,4 @@ main = mainWidget showBoard
 
 elSvgns :: MonadWidget t m => Text -> Dynamic t (Map Text Text) -> m a -> m (El t, a)
 elSvgns = elDynAttrNS' (Just "http://www.w3.org/2000/svg")
+
