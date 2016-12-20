@@ -17,10 +17,18 @@ rectAttrs c =   "width" =:        size
              <> "style" =:        (pack $ "fill:" ++ if c then "red" else "black")
              <> "oncontextmenu" =: "return false;"
 
+h1Attrs = ("oncontextmenu" =: "return false;")
+-- h1Attrs = mempty
+
 main = mainWidget $ do 
+           (h1el, _) <- elAttr' "h1"  h1Attrs $ text "click square below and this text too."
            rec 
                rb <- foldDyn (\e b -> not b) False ev
                (_, ev) <- elSvgns "svg" (constDyn $ "width" =: size <> "height" =: size) $ do
                    (el, _) <- elSvgns "rect" (fmap rectAttrs rb) $ return ()
-                   return $ leftmost [domEvent Click el , domEvent Contextmenu el]
+                   return $ leftmost [ domEvent Click el 
+                                     , domEvent Contextmenu el 
+                                     , domEvent Click h1el 
+                                     , domEvent Contextmenu h1el 
+                                     ]
            return ()

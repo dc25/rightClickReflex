@@ -10,12 +10,12 @@ ghcjs-base-0.2.0.0-D8NHjFR0nuJEBIdpJ8312j:16499
 ghcjs-dom-0.2.3.1-L0IRwwiUDix9xezZ47SisT:138081
 ghcjs-prim-0.1.0.0-IFhsWclGfLr1HfhUvIVylA:10678
 integer-gmp:             14239
-main:                    24298
+main:                    27034
 prim-uniq-0.1.0.1-Lbg7Imujn019qkjLCx908j:2786
 primitive-0.6.1.0-PBvNfnj6B81wEvI5CBk0H:809
 ref-tf-0.4.0.1-3hM7hnw7bOB1FwMAOCGwpN:1286
-reflex-0.5.0-4dY2MAQRT2h4hcfauhDnW5:1059829
-reflex-dom-0.4-D2yHtMVcsX3FVd3U7yxR5m:556738
+reflex-0.5.0-4dY2MAQRT2h4hcfauhDnW5:1060085
+reflex-dom-0.4-D2yHtMVcsX3FVd3U7yxR5m:630786
 text-1.2.2.1-6Pphv4bz3hHEAngNHxPNZe:515
 these-0.7.1-Jw1YCr04InZ1c0BLK9t9qc:2986
 transformers-0.5.2.0-Lvs3wlJMkpyLRFNHJ8pmeB:24632
@@ -141,7 +141,7 @@ integer-gmp
     GHC.Integer.Type:                   14239
 
 main
-    Main:                               24298
+    Main:                               27034
 
 prim-uniq-0.1.0.1-Lbg7Imujn019qkjLCx908j
     Unsafe.Unique.Prim:                 1053
@@ -166,19 +166,19 @@ reflex-0.5.0-4dY2MAQRT2h4hcfauhDnW5
     Reflex.PostBuild.Class:             1030
     Reflex.Requester.Base:              79254
     Reflex.Requester.Class:             4001
-    Reflex.Spider.Internal:             808825
+    Reflex.Spider.Internal:             809073
     Reflex.TriggerEvent.Base:           375
-    Reflex.TriggerEvent.Class:          1371
+    Reflex.TriggerEvent.Class:          1379
 
 reflex-dom-0.4-D2yHtMVcsX3FVd3U7yxR5m
-    Foreign.JavaScript.TH:              30813
-    Reflex.Dom.Builder.Class:           21241
+    Foreign.JavaScript.TH:              30981
+    Reflex.Dom.Builder.Class:           21616
     Reflex.Dom.Builder.Class.Events:    139131
     Reflex.Dom.Builder.Immediate:       327861
     Reflex.Dom.Class:                   132
     Reflex.Dom.Internal:                26385
     Reflex.Dom.Old:                     1269
-    Reflex.Dom.Widget.Basic:            9906
+    Reflex.Dom.Widget.Basic:            83411
 
 text-1.2.2.1-6Pphv4bz3hHEAngNHxPNZe
     Data.Text:                          125
@@ -194,5 +194,5 @@ transformers-0.5.2.0-Lvs3wlJMkpyLRFNHJ8pmeB
 
 
 
-packed metadata: 509122
+packed metadata: 514757
 
