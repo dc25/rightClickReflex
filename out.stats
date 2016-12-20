@@ -1,6 +1,6 @@
 code size summary per package:
 
-base:                    339788
+base:                    329460
 containers-0.5.7.1-9AY76Rzb1QLJmP8p4wSZRz:156245
 deepseq-1.4.2.0-47yvsc92PQF1rYmebWoAXZ:884
 dependent-map-0.2.2.0-Aye7JC6J9Q4ASbo6OrJWec:114868
@@ -9,13 +9,13 @@ ghc-prim:                31795
 ghcjs-base-0.2.0.0-D8NHjFR0nuJEBIdpJ8312j:16499
 ghcjs-dom-0.2.3.1-L0IRwwiUDix9xezZ47SisT:138081
 ghcjs-prim-0.1.0.0-IFhsWclGfLr1HfhUvIVylA:10712
-integer-gmp:             14819
-main:                    37107
+integer-gmp:             14239
+main:                    33384
 prim-uniq-0.1.0.1-Lbg7Imujn019qkjLCx908j:2786
 primitive-0.6.1.0-PBvNfnj6B81wEvI5CBk0H:809
 ref-tf-0.4.0.1-3hM7hnw7bOB1FwMAOCGwpN:1286
 reflex-0.5.0-4dY2MAQRT2h4hcfauhDnW5:1061886
-reflex-dom-0.4-D2yHtMVcsX3FVd3U7yxR5m:556880
+reflex-dom-0.4-D2yHtMVcsX3FVd3U7yxR5m:556762
 text-1.2.2.1-6Pphv4bz3hHEAngNHxPNZe:515
 these-0.7.1-Jw1YCr04InZ1c0BLK9t9qc:2986
 transformers-0.5.2.0-Lvs3wlJMkpyLRFNHJ8pmeB:24632
@@ -48,7 +48,7 @@ base
     Foreign.Storable:                   9380
     GHC.Base:                           8452
     GHC.Conc.Sync:                      8239
-    GHC.Enum:                           12171
+    GHC.Enum:                           4294
     GHC.Err:                            546
     GHC.Exception:                      12448
     GHC.Fingerprint:                    1459
@@ -74,7 +74,7 @@ base
     GHC.Int:                            755
     GHC.List:                           13530
     GHC.MVar:                           174
-    GHC.Num:                            2981
+    GHC.Num:                            530
     GHC.Ptr:                            610
     GHC.STRef:                          620
     GHC.Show:                           8993
@@ -139,10 +139,10 @@ ghcjs-prim-0.1.0.0-IFhsWclGfLr1HfhUvIVylA
     GHCJS.Prim.Internal:                4327
 
 integer-gmp
-    GHC.Integer.Type:                   14819
+    GHC.Integer.Type:                   14239
 
 main
-    Main:                               37107
+    Main:                               33384
 
 prim-uniq-0.1.0.1-Lbg7Imujn019qkjLCx908j
     Unsafe.Unique.Prim:                 1053
@@ -172,8 +172,8 @@ reflex-0.5.0-4dY2MAQRT2h4hcfauhDnW5
     Reflex.TriggerEvent.Class:          1379
 
 reflex-dom-0.4-D2yHtMVcsX3FVd3U7yxR5m
-    Foreign.JavaScript.TH:              31067
-    Reflex.Dom.Builder.Class:           21261
+    Foreign.JavaScript.TH:              30969
+    Reflex.Dom.Builder.Class:           21241
     Reflex.Dom.Builder.Class.Events:    139131
     Reflex.Dom.Builder.Immediate:       327861
     Reflex.Dom.Internal:                26385
@@ -194,5 +194,5 @@ transformers-0.5.2.0-Lvs3wlJMkpyLRFNHJ8pmeB
 
 
 
-packed metadata: 526129
+packed metadata: 521793
 
